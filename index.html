@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Recorder Buddy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="IMG/bot.jpg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Recorder Buddy</h1>
+      <p>Easy to use recorder free tools directly from your browser!</p>
+
+      <div>
+        <div class="col">
+          <img class="img_tools" src="IMG/screen.jpg" alt="" />
+          <button id="btn">Screen Recorder</button>
+        </div>
+        <div class="col">
+          <img class="img_tools" src="IMG/mic.jpg" alt="" />
+          <button id="btn">Audio Recorder</button>
+        </div>
+        <div class="col">
+          <img class="img_tools" src="IMG/video.jpg" alt="" />
+          <button id="btn">Camera Recorder</button>
+        </div>
+      </div>
+
+      <br />
+      <img
+        src="IMG/bot.jpg"
+        alt="video illustration"
+        width="60%"
+        height="auto"
+        id="img"
+      />
+      <video
+        width="50%"
+        height="50%"
+        controls
+        style="display: none"
+        id="video"
+      ></video>
+    </div>
+  </body>
+
+  <script>
+    let btn = document.getElementById("btn");
+    let img = document.getElementById("img");
+    let video = document.getElementById("video");
+
+    btn.addEventListener("click", () => {
+      start();
+    });
+
+    const start = async () => {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          mediaSource: "screen",
+        },
+      });
+
+      const data = [];
+
+      const mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (e) => {
+        data.push(e.data);
+      };
+      mediaRecorder.start();
+      mediaRecorder.onstop = (e) => {
+        document.querySelector("video").src = URL.createObjectURL(
+          new Blob(data, {
+            type: data[0].type,
+          })
+        );
+        img.style.display = "none";
+        video.style.display = "block";
+      };
+    };
+  </script>
+</html>
